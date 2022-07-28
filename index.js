@@ -16,6 +16,7 @@ let player
 let projectiles
 let enemies
 let particles
+let intervalId
 
 function init() {
     player = new Player(x, y, 10, 'white')
@@ -63,12 +64,11 @@ function getScore() {
 }
 
 startGameButton.addEventListener('click', () => {
-    clearTimeout()
     setScore(0)
     init()
     hideModal()
     animate()
-    spawnEnemies()
+    intervalId = spawnEnemies()
 })
 
 // Main Game Loop
@@ -95,7 +95,12 @@ function animate() {
         }
     })
 
+    const enemiesToAdd = []
+
     enemies.forEach((enemy, eIndex) => {
+        // Accelerate Enemies toward Player
+        enemy.accelerateToward(player)
+
         enemy.update()
 
         // Detect Endgame, enemy <--> player collision
@@ -103,6 +108,7 @@ function animate() {
             enemy.x - player.x,
             enemy.y - player.y)
         if (distance < enemy.radius + player.radius) {
+            clearInterval(intervalId)
             showModal()
             cancelAnimationFrame(animationId)
         }
@@ -127,12 +133,23 @@ function animate() {
                         }))
                 }
                 // Large enemy -- shrink it
-                if (enemy.radius - 10 > 10) {
+                if (enemy.radius > 20) {
                     setScore(getScore() + 100)
                     gsap.to(enemy, {
                         radius: enemy.radius - 10
                     })
                     projectiles.splice(pIndex, 1)
+
+                    // Spawn N smaller child enemies
+                    for (let i = 0; i < 3; i++) {
+                        const angle = Math.random() * Math.PI * 2
+                        const velocity = {
+                            x: Math.cos(angle) * 100,
+                            y: Math.sin(angle) * 100,
+                        }
+                        enemiesToAdd.push(new Enemy(enemy.x, enemy.y, enemy.radius / 2, enemy.color, velocity))
+                    }
+
                     // Small enemy -- asplode it
                 } else {
                     setScore(getScore() + 250)
@@ -144,6 +161,8 @@ function animate() {
             }
         })
     })
+
+    enemies = [...enemies, ...enemiesToAdd]
 
     particles.forEach((particle, pIndex) => {
         if (particle.alpha <= 0) {
