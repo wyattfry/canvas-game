@@ -50,17 +50,32 @@ async function updateLeaderboard() {
     })
 }
 
+let mouseY
+let mouseX
 
-// Controllers
-// ##  On click shoot projectile
-window.addEventListener('click', (e) => {
-    const angle = Math.atan2(e.clientY - y, e.clientX - x)
+document.addEventListener("mousemove", e => {
+    mouseY = e.clientY
+    mouseX = e.clientX
+})
+
+function shootHandler(e) {
+    const angle = Math.atan2(mouseY - y, mouseX - x)
     const velocity = {
         x: Math.cos(angle) * 5,
         y: Math.sin(angle) * 5,
     }
     projectiles.push(new Projectile(x, y, 5, 'white', velocity))
-})
+}
+
+// Controllers
+// ##  On click shoot projectile
+window.addEventListener('click', shootHandler)
+window.addEventListener('keyup', event => {
+    console.log('key press')
+    if (event.code === 'Space') {
+        shootHandler()
+    }
+  })
 
 window.addEventListener('touchstart', (e) => {
     const angle = Math.atan2(e.touches[0].clientY - y, e.touches[0].clientX - x)
