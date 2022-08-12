@@ -1,6 +1,8 @@
 
 
 // Startup
+getVersion();
+
 const canvas = document.querySelector('canvas');
 const scoreEl = document.querySelector('#scoreEl')
 const startGameButton = document.querySelector('#startGameButton')
@@ -17,12 +19,14 @@ let projectiles
 let enemies
 let particles
 let intervalId
+const cancellationToken = {expired: false}
 
 function init() {
     player = new Player(x, y, 10, 'white')
     projectiles = []
     enemies = []
     particles = []
+    cancellationToken.expired = false
 }
 
 let mouseY
@@ -82,7 +86,7 @@ startGameButton.addEventListener('click', () => {
     init()
     hideModal()
     animate()
-    intervalId = spawnEnemies()
+    intervalId = spawnEnemies(cancellationToken)
 })
 
 // Main Game Loop
@@ -123,6 +127,7 @@ function animate() {
             enemy.y - player.y)
         if (distance < enemy.radius + player.radius) {
             cancelAnimationFrame(animationId)
+            cancellationToken.expired = true
             clearInterval(intervalId)
             let playerName = ''
             while (playerName.length < 1 || playerName.length > 3) {
