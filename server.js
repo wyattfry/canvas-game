@@ -10,6 +10,13 @@ http.createServer(function (request, response) {
     console.log('request starting...');
 
     const { pathname } = url.parse(request.url)
+    
+    if (request.method === 'GET' && pathname === '/version') {
+        const package = JSON.parse(fs.readFileSync('package.json'))
+        response.writeHead(200, { 'content-type': 'application/text' })
+        response.end(package.version);
+        return
+    }
 
     if (request.method === 'GET' && pathname === '/scores') {
         try {
