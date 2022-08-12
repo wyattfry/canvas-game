@@ -1,0 +1,21 @@
+{
+  "name": "html_canvas_game",
+  "version": "1.0.0",
+  "description": "Based on [chriscourses/my-first-game](https://github.com/chriscourses/my-first-game)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wyattfry/html-canvas-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wyattfry/html-canvas-game/issues"
+  },
+  "homepage": "https://github.com/wyattfry/html-canvas-game#readme"
+}
