@@ -1,9 +1,11 @@
 import { createClient } from 'redis';
 
+const redisUrl = `redis://default:${process.env.REDIS_PASSWORD}@redis:6379`;
+
 class Datastore {
   static getScores(callback) {
     const ds = createClient({
-      url: `redis://default:${process.env.REDIS_PASSWORD}@localhost:6379`,
+      url: redisUrl,
     });
     ds.on('error', (err) => console.log('Redis Client Error.\n', err));
     ds.connect()
@@ -21,7 +23,7 @@ class Datastore {
 
   static setScore(name, amount, callback) {
     const ds = createClient({
-      url: `redis://default:${process.env.REDIS_PASSWORD}@localhost:6379`,
+      url: redisUrl,
     });
     ds.on('error', (err) => console.log('Redis Client Error.\n', err));
     ds.connect()
