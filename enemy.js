@@ -71,7 +71,9 @@ function spawnEnemies(cancellationToken) {
       };
       const color = `hsl(${Math.random() * 360}, 50%, 50%)`;
       enemies.push(new Enemy(enemyX, enemyY, radius, color, velocity));
-      spawnIntervalMs = spawnIntervalMs > 500 ? Math.floor(spawnIntervalMs * 0.95) : spawnIntervalMs;
+      spawnIntervalMs = spawnIntervalMs > 500
+        ? Math.floor(spawnIntervalMs * 0.95)
+        : spawnIntervalMs;
       setTimeout(() => spawnEnemies(cancellationToken), spawnIntervalMs);
     }, spawnIntervalMs);
   }
