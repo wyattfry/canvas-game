@@ -1,6 +1,6 @@
 {
   "name": "html_canvas_game",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "description": "Based on [chriscourses/my-first-game](https://github.com/chriscourses/my-first-game)",
   "main": "index.js",
