@@ -1,6 +1,8 @@
 import { createClient } from 'redis';
 
-const redisUrl = `redis://default:${process.env.REDIS_PASSWORD}@redis:6379`;
+const redisPassword = process.env.REDIS_PASSWORD || 'testing';
+
+const redisUrl = `redis://default:${redisPassword}@redis:6379`;
 
 class Datastore {
   static getScores(callback) {
@@ -12,7 +14,7 @@ class Datastore {
       .then(() => ds.lRange('scores', 0, -1))
       .then((scoresRaw) => {
         const allScores = [];
-        scoresRaw.sort((a, b) => b[1] - a[1]).forEach((s) => {
+        scoresRaw.sort((a, b) => JSON.parse(b)[1] - JSON.parse(a)[1]).forEach((s) => {
           allScores.push(JSON.parse(s));
         });
         callback(allScores);
