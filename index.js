@@ -5,6 +5,13 @@ const canvas = document.querySelector('canvas');
 const scoreEl = document.querySelector('#scoreEl');
 const startGameButton = document.querySelector('#startGameButton');
 
+console.log('adding gamepad event listener');
+window.addEventListener("gamepadconnected", (e) => {
+  console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+    e.gamepad.index, e.gamepad.id,
+    e.gamepad.buttons.length, e.gamepad.axes.length, e.gamepad.axes);
+});
+
 const c = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -36,6 +43,15 @@ document.addEventListener('mousemove', (e) => {
 
 function shootHandler(e) {
   const angle = Math.atan2(mouseY - y, mouseX - x);
+  const velocity = {
+    x: Math.cos(angle) * 5,
+    y: Math.sin(angle) * 5,
+  };
+  projectiles.push(new Projectile(x, y, 5, 'white', velocity));
+}
+
+function axisShootHandler(xAxis, yAxis) {
+  const angle = Math.atan2(xAxis, yAxis);
   const velocity = {
     x: Math.cos(angle) * 5,
     y: Math.sin(angle) * 5,
@@ -91,6 +107,20 @@ function animate() {
   const animationId = requestAnimationFrame(animate);
   c.fillStyle = 'rgba(0,0,0, 0.1)';
   c.fillRect(0, 0, canvas.width, canvas.height);
+  
+  let buttonIdx = 0
+  for (const button of navigator.getGamepads()[0].buttons) {
+    if (button.pressed) {
+      console.log('button pressed', buttonIdx, button)
+    }
+    buttonIdx++
+  }
+  
+  // if (navigator.getGamepads()[0].axes[2] > 0.01 || navigator.getGamepads()[0].axes[2] < -0.01) {
+    axisShootHandler(navigator.getGamepads()[0].axes[3], navigator.getGamepads()[0].axes[2])
+  // } else if (navigator.getGamepads()[0].axes[3] > 0.01 || navigator.getGamepads()[0].axes[3] < -0.01) {
+    axisShootHandler(navigator.getGamepads()[0].axes[3], navigator.getGamepads()[0].axes[2])
+  // }
 
   player.draw();
 
@@ -123,7 +153,7 @@ function animate() {
       enemy.x - player.x,
       enemy.y - player.y,
     );
-    if (distance < enemy.radius + player.radius) {
+    if (false && distance < enemy.radius + player.radius) {
       cancelAnimationFrame(animationId);
       cancellationToken.expired = true;
       clearInterval(intervalId);
