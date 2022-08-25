@@ -65,6 +65,7 @@
 
 <body>
     <div class="fixed text-white text-sm ml-2 mt-1 select-none"><span>Score: </span><span id="scoreEl">0</span></div>
+    <div style="top: 0; right: 0" class="fixed text-white text-sm mr-2 mb-1 select-none">Ammo: <span id="projectileEl">200</span></div>
     <div style="bottom: 0; right: 0" class="fixed text-white text-sm mr-2 mb-1 select-none"><span id="versionEl">v---</span></div>
 
     <div id="modalEl" class="fixed inset-0 flex items-center justify-center">
@@ -74,6 +75,9 @@
             <div>
                 <button id="startGameButton" class="text-sm bg-blue-500 text-white w-full py-3 rounded-full">Start
                     Game</button>
+            </div>
+            <div>
+                <p class=m-4>Click or press Spacebar to shoot.</p>
             </div>
             <div id="leaderboard">
                 <h3 class="mt-10 font-bold">Leaderboard</h3>
