@@ -1,6 +1,6 @@
 import { createServer } from 'http';
 import {
-  readFile, readFileSync, accessSync, constants, writeFileSync,
+  readFile, readFileSync,
 } from 'fs';
 import { extname } from 'path';
 import { parse } from 'url';
@@ -9,7 +9,7 @@ import Datastore from './datastore.js';
 
 const port = process.env.PORT || 8080;
 
-createServer((request, response) => {
+createServer(async (request, response) => {
   const { pathname } = parse(request.url);
 
   if (request.method === 'GET' && pathname === '/version') {
@@ -20,10 +20,9 @@ createServer((request, response) => {
   }
 
   if (request.method === 'GET' && pathname === '/scores') {
-    Datastore.getScores((allScores) => {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify(allScores.slice(0, 5), 'utf-8'));
-    });
+    const allScores = await Datastore.getScores();
+    response.writeHead(200, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify(allScores.slice(0, 5), 'utf-8'));
   } else if (request.method === 'POST' && pathname === '/scores') {
     const { query } = parse(request.url);
     const { name } = qs.parse(query);
@@ -34,10 +33,9 @@ createServer((request, response) => {
       response.end('name must be 3 or fewer characters, score must be positive integer', 'utf-8');
       return;
     }
-    Datastore.setScore(name, score, () => {
-      response.writeHead(201);
-      response.end();
-    });
+    await Datastore.setScore(name, score);
+    response.writeHead(201);
+    response.end();
   } else {
     let filePath = `.${request.url}`;
     if (filePath === './') filePath = './index.html';
